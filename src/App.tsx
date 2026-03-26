@@ -11,7 +11,7 @@ function App() {
 		<Routes>
 			<Route element={<PrivateRoutes />}>
 				<Route element={<Layout />}>
-					<Route path="/despesas" element={<Home />} />
+					<Route path="/" element={<Home />} />
 					<Route path="/categorias" element={<Categories />} />
 				</Route>
 			</Route>

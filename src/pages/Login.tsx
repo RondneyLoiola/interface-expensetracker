@@ -52,7 +52,7 @@ export default function LoginPage() {
 
 
 			setTimeout(() => {
-				navigate("/despesas");
+				navigate("/");
 			}, 2300)
 		} catch (error) {
 			console.error("Email na solicitação", error);
@@ -85,7 +85,7 @@ export default function LoginPage() {
 
 			// Redireciona para a página de despesas
 			setTimeout(() => {
-				navigate("/despesas");
+				navigate("/");
 			}, 2300);
 
 		} catch (error) {

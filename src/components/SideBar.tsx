@@ -60,8 +60,8 @@ export function SiderBar() {
 
 					<button
 						type="button"
-						onClick={() => navigate("/despesas")}
-						className={`${pathname === "/despesas" ? "bg-green-100 text-green-800" : ""} flex items-center gap-3 p-6 w-full transition-all duration-200 hover:bg-green-100 text-left group`}
+						onClick={() => navigate("/")}
+						className={`${pathname === "/" ? "bg-green-100 text-green-800" : ""} flex items-center gap-3 p-6 w-full transition-all duration-200 hover:bg-green-100 text-left group`}
 					>
 						<Calculator
 							size={20}

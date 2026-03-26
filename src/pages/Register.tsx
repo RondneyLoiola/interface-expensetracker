@@ -100,7 +100,7 @@ export default function SignupPage() {
 			putUserData(userData);
 
 			setTimeout(() => {
-				navigate("/despesas");
+				navigate("/");
 			}, 2300);
 
 		} catch (error) {
