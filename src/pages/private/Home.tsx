@@ -1,11 +1,11 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: useEffect */
 import { ArrowDown, ChartGantt, List } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Card } from "../components/Card";
-import NewExpense from "../components/NewExpense";
-import { RecentExpense } from "../components/RecentExpenses";
-import { api } from "../services/api";
-import { PriceConvert } from "../utils/priceConvert";
+import { Card } from "../../components/Card";
+import NewExpense from "../../components/NewExpense";
+import { RecentExpense } from "../../components/RecentExpenses";
+import { api } from "../../services/api";
+import { PriceConvert } from "../../utils/priceConvert";
 
 interface ExpenseFormData {
 	expense: string;

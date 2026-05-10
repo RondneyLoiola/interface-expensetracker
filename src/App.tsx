@@ -1,9 +1,10 @@
 import { Route, Routes } from "react-router";
 import Layout from "./Layout/layout";
-import Home from "./pages/Home";
+import Home from "./pages/private/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./routes/PrivateRoutes";
+import NotFound from "./pages/NotFound";
 
 function App() {
 	return (
@@ -15,6 +16,7 @@ function App() {
 			</Route>
 			<Route path="/entrar" element={<Login />} />
 			<Route path="/cadastro" element={<Register />} />
+			<Route path="*" element={<NotFound />} />
 		</Routes>
 	);
 }
