@@ -50,9 +50,8 @@ export default function LoginPage() {
 			);
 			putUserData(userData);
 
-
 			setTimeout(() => {
-				navigate("/");
+				navigate("/dashboard");
 			}, 2300)
 		} catch (error) {
 			console.error("Email na solicitação", error);
