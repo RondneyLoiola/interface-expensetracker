@@ -21,7 +21,7 @@ function Home() {
 	const fetchExpenses = async () => {
 		setLoading(true);
 		try {
-			const url = `/expenses/me?month=${selectedMonth}&year=${selectedYear}`;
+			const url = `/expenses/me?month=0${selectedMonth}&year=${selectedYear}`;
 			const { data } = await api.get(url);
 
 			if (!data) {
@@ -46,55 +46,13 @@ function Home() {
 		fetchExpenses();
 	};
 
-	const months = [
-		"Janeiro",
-		"Fevereiro",
-		"Março",
-		"Abril",
-		"Maio",
-		"Junho",
-		"Julho",
-		"Agosto",
-		"Setembro",
-		"Outubro",
-		"Novembro",
-		"Dezembro",
-	];
-
 	return (
-		<div className="w-full flex flex-col items-start md:ml-80 pt-4">
+		<section className="w-full flex flex-col items-start md:ml-80 pt-4">
 			<div>
 				<h1 className="font-bold text-3xl">Calculadora de Despesas</h1>
 				<p className="text-gray-600 mt-2">
 					Adicione e gerencia suas despesas facilmente
 				</p>
-			</div>
-
-			<div className="flex gap-2">
-				<select
-					value={selectedMonth}
-					onChange={(e) => setSelectedMonth(Number(e.target.value))}
-					className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-				>
-					{months.map((month, i) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: key option
-						<option key={i} value={i + i}>
-							{month}
-						</option>
-					))}
-				</select>
-
-				<select
-					value={selectedYear}
-					onChange={(e) => setSelectedYear(Number(e.target.value))}
-					className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-				>
-					{[2023, 2024, 2025, 2026].map((year) => (
-						<option key={year} value={year}>
-							{year}
-						</option>
-					))}
-				</select>
 			</div>
 
 			<div>
@@ -110,14 +68,14 @@ function Home() {
 						className="bg-blue-200 text-blue-500"
 						icon={<List size={20} />}
 						title="Número de Despesas"
-						subtitle="Transações"
+						subtitle="Despesas deste Mês"
 						value={summary.totalExpenses}
 					/>
 					<Card
 						className="bg-green-200 text-green-700"
 						icon={<ChartGantt size={20} />}
 						title="Média por Despesa"
-						subtitle="Valor Médio"
+						subtitle="Valor Médio deste Mês"
 						value={PriceConvert(
 							summary.totalExpenses > 0
 								? summary.totalAmount / summary.totalExpenses
@@ -135,7 +93,7 @@ function Home() {
 					/>
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }
 
