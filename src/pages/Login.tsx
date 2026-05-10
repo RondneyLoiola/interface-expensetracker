@@ -84,7 +84,7 @@ export default function LoginPage() {
 
 			// Redireciona para a página de despesas
 			setTimeout(() => {
-				navigate("/");
+				navigate("/dashboard");
 			}, 2300);
 
 		} catch (error) {
