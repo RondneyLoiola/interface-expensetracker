@@ -5,18 +5,23 @@ import { Card } from "../../components/Card";
 import NewExpense from "../../components/NewExpense";
 import { RecentExpense } from "../../components/RecentExpenses";
 import { api } from "../../services/api";
-import type { Expense, SummaryData } from "../../types/expense";
+import type { Expense, ExpenseSummary } from "../../types/expense";
 import { PriceConvert } from "../../utils/priceConvert";
+
+const initialSummary: ExpenseSummary = {
+	totalAmount: 0,
+	totalExpenses: 0,
+	expensesByCategory: [],
+}
 
 function Home() {
 	const [expense, setExpenses] = useState<Expense[]>([]);
-	const [summary, setSummary] = useState<SummaryData>({
-		totalAmount: 0,
-		totalExpenses: 0,
-	});
-	const [loading, setLoading] = useState(false);
-	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+	const [summary, setSummary] = useState<ExpenseSummary>(initialSummary);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [selectedMonth, _setSelectedMonth] = useState(
+		new Date().getMonth() + 1,
+	);
+	const [selectedYear, _setSelectedYear] = useState(new Date().getFullYear());
 
 	const fetchExpenses = async () => {
 		setLoading(true);
@@ -29,7 +34,6 @@ function Home() {
 			}
 
 			setExpenses(data.expenses);
-			setSummary(data.summary);
 		} catch (error) {
 			console.error("Erro ao buscar despesas:", error);
 		} finally {
@@ -37,8 +41,26 @@ function Home() {
 		}
 	};
 
+	const fetchExpensesSummary = async () => {
+		try {
+			const url = `/expenses/summary/me?month=0${selectedMonth}&year=${selectedYear}`;
+			const { data } = await api.get(url);
+
+			if(!data) {
+				throw new Error("Erro ao buscar dados!");
+			}
+
+			setSummary(data);
+		} catch (error) {
+			console.error("Erro ao buscar resumo de despesas:", error);
+		} finally {
+			setLoading(false);
+		}
+	}
+
 	useEffect(() => {
 		fetchExpenses();
+		fetchExpensesSummary();
 	}, [selectedMonth, selectedYear]);
 
 	// Recarrega quando cria ou deleta uma despesa
@@ -47,7 +69,7 @@ function Home() {
 	};
 
 	return (
-		<section className="w-full flex flex-col items-start md:ml-80 pt-4">
+		<section className="w-full flex flex-col items-start md:ml-80 py-4">
 			<div>
 				<h1 className="font-bold text-3xl">Calculadora de Despesas</h1>
 				<p className="text-gray-600 mt-2">
