@@ -43,7 +43,9 @@ function Home() {
 
 	const fetchExpensesSummary = async () => {
 		try {
-			const url = `/expenses/summary/me?month=0${selectedMonth}&year=${selectedYear}`;
+			const monthFormatted = String(selectedMonth).padStart(2, "0"); 
+
+			const url = `/expenses/summary/me?month=${monthFormatted}&year=${selectedYear}`;
 			const { data } = await api.get(url);
 
 			if(!data) {
@@ -66,6 +68,7 @@ function Home() {
 	// Recarrega quando cria ou deleta uma despesa
 	const handleExpenseChange = () => {
 		fetchExpenses();
+		fetchExpensesSummary();
 	};
 
 	return (

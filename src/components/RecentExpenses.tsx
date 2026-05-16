@@ -37,7 +37,7 @@ export function RecentExpense({
 	};
 
 	const clearAllExpenses = async () => {
-		if (window.confirm("Tem certeza que deseja limpar todas as despesas?"))
+		if (!window.confirm("Tem certeza que deseja limpar todas as despesas?"))
 			return;
 
 		try {
@@ -59,15 +59,17 @@ export function RecentExpense({
 		<div className="p-6 max-h-screen w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-gray-100">
 			<div className="flex justify-between items-center mb-6">
 				<h2 className="text-xl font-bold text-gray-900">Despesas deste Mês</h2>
-				<button
-					type="button"
-					onClick={clearAllExpenses}
-					disabled={isLoading}
-					className="text-red-500 text-sm flex items-center gap-2 font-medium hover:text-red-600 transition-colors"
-				>
-					<Trash2 size={16} />
-					Limpar Tudo
-				</button>
+				{expenses.length > 0 && (
+					<button
+						type="button"
+						onClick={clearAllExpenses}
+						disabled={isLoading}
+						className="text-red-500 text-sm flex items-center gap-2 font-medium hover:text-red-600 transition-colors"
+					>
+						<Trash2 size={16} />
+						Limpar Tudo
+					</button>
+				)}
 			</div>
 
 			<div className="flex flex-col gap-3 max-h-96 overflow-y-auto">
@@ -110,14 +112,18 @@ export function RecentExpense({
 									className="w-8 h-8 flex items-center justify-center rounded-full bg-red-200 text-red-500 hover:text-red-700 transition-colors"
 									aria-label="Deletar despesa"
 								>
-									{deletingId === expense._id ? <Loading /> : <Trash2 size={18} />}
+									{deletingId === expense._id ? (
+										<Loading />
+									) : (
+										<Trash2 size={18} />
+									)}
 								</button>
 							</div>
 						</div>
 					))
 				) : (
 					<div className="flex justify-center items-center flex-col gap-4 text-gray-400 py-20 overflow-hidden">
-						<BookText size={48} strokeWidth={1.5}/>
+						<BookText size={48} strokeWidth={1.5} />
 						<span className="font-semibold text-lg">
 							Nenhuma despesa adicionada
 						</span>

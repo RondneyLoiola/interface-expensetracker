@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import api from "../../services/api";
+import type { Category } from "../../types/category";
 import type { Expense, ExpenseSummary } from "../../types/expense";
 
 const initialSummary: ExpenseSummary = {
@@ -13,6 +14,7 @@ const initialSummary: ExpenseSummary = {
 };
 
 function Expenses() {
+	const [categories, setCategories] = useState<Category[]>([]);
 	const [_expense, setExpenses] = useState<Expense[]>([]);
 	const [summary, setSummary] = useState<ExpenseSummary>(initialSummary);
 	const [currentMonth, setCurrentMonth] = useState<number>(
@@ -58,6 +60,19 @@ function Expenses() {
 		}
 	};
 
+	const fetchCategories = async () => {
+		setLoading(true);
+
+		try {
+			const { data } = await api.get("/categories");
+			setCategories(data);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const fetchExpenses = async () => {
 		setLoading(true);
 
@@ -88,7 +103,7 @@ function Expenses() {
 
 			const { data } = await api.get(url);
 
-			if(!data) {
+			if (!data) {
 				throw new Error("Erro ao buscar dados!");
 			}
 
@@ -98,18 +113,19 @@ function Expenses() {
 		} finally {
 			setLoading(false);
 		}
-	}
+	};
 
 	useEffect(() => {
+		fetchCategories();
 		fetchExpenses();
 		fetchExpensesSummary();
 	}, [currentMonth, currentYear]);
 
 	return (
-		<section className="w-full flex flex-col items-start md:ml-80 py-4">
+		<section className="w-full flex items-start md:ml-40 py-4">
 			{/* Lado Esquerdo */}
 			<div className="flex flex-col gap-4 h-full w-[50%]">
-				<form className="flex items-center gap-4 bg-white rounded-lg px-4 py-2">
+				<form className="flex items-center justify-center gap-4 bg-white rounded-lg px-4 py-2">
 					<button
 						type="button"
 						aria-label="Mês anterior"
@@ -155,76 +171,61 @@ function Expenses() {
 				</form>
 
 				{/* Gráfico */}
-				<div className="w-full p-4 bg-white rounded-2xl">
-					<div>
-						{summary.expensesByCategory.length > 0 ? (
-							<div className="h-72 mt-4">
-								<ResponsiveContainer>
-									<PieChart>
-										<Pie
-											data={summary.expensesByCategory}
-											cx="50%"
-											cy="50%"
-											outerRadius={80}
-											dataKey='amount'
-											nameKey="categoryName"
-											labelLine={false}											
-										>
-											{summary.expensesByCategory.map((entry) => (
-												console.log(entry),
-												<Cell
-													key={entry.categoryId}
-													fill={entry.categoryColor}
-												/>
-											))}
-										</Pie>
-										<Tooltip formatter={(value) => `R$ ${value}`} />
-									</PieChart>
-								</ResponsiveContainer>
+				<div className="w-full p-4 bg-white rounded-2xl flex ">
+					{summary.expensesByCategory.length > 0 ? (
+						<div className="w-full h-100 mt-4 flex ">
+							<ResponsiveContainer width={500} height="100%">
+								<PieChart>
+									<Pie
+										data={summary.expensesByCategory}
+										cx="50%"
+										cy="50%"
+										outerRadius={150}
+										dataKey="amount"
+										nameKey="categoryName"
+										labelLine={false}
+									>
+										{summary.expensesByCategory.map((entry) => (
+											<Cell key={entry.categoryId} fill={entry.categoryColor} />
+										))}
+									</Pie>
+									<Tooltip formatter={(value) => `R$ ${value}`} />
+								</PieChart>
+							</ResponsiveContainer>
+
+							<div className="h-full flex flex-col gap-4 items-center justify-center">
+								{categories.map((category) => (
+									<div
+										className="flex items-center gap-2 w-full justify-start"
+										key={category._id}
+									>
+										<div
+											style={{ background: `${category.color}` }}
+											className="w-6 h-6 rounded-2xl"
+										/>
+										<span>{category.name}</span>
+									</div>
+								))}
 							</div>
-						) : (
-							<div className="flex flex-col items-center justify-center h-72">
-								<p className="text-2xl font-bold">Nenhuma despesa encontrada</p>
-							</div>
-						)}
-					</div>
+						</div>
+					) : (
+						<div className="flex flex-col items-center justify-center h-72 w-full">
+							<p className="text-2xl font-bold">Nenhuma despesa encontrada</p>
+						</div>
+					)}
 				</div>
-				
+			</div>
+
+			<div className="h-full w-px bg-gray-300 mx-2">
+
 			</div>
 
 			{/* Lado Direito */}
-			<div></div>
+			<div className="w-[50%] h-full p-4 bg-red-200">
+				<h2>{currentMonth === 1 ? `Janeiro de ${currentYear}` : `${months[currentMonth - 1]} de ${currentYear}`}</h2>
+			</div>
 		</section>
 	);
 }
 
 export default Expenses;
-
-{
-	/* <div className="flex gap-2">
-				<select
-					value={selectedMonth}
-					onChange={(e) => setSelectedMonth(Number(e.target.value))}
-					className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-				>
-					{months.map((month, i) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: key option
-						<option key={i} value={i + i}>
-							{month}
-						</option>
-					))}
-				</select>
-
-				<select
-					value={selectedYear}
-					onChange={(e) => setSelectedYear(Number(e.target.value))}
-					className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-				>
-					{[2023, 2024, 2025, 2026].map((year) => (
-						<option key={year} value={year}>
-							{year}
-						</option>
-					))}
-				</select>
-			</div> */
-}
